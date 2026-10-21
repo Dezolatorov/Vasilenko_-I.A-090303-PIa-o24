@@ -1,0 +1,16 @@
+# Python venv
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Coverage
+.coverage
+.coverage.*
