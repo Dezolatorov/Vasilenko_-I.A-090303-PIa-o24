@@ -1,0 +1,61 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: library_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-library}
+      POSTGRES_USER: ${DATABASE_USER:-library}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-library_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-library} -d ${DATABASE_NAME:-library}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    image: library-app:latest
+    container_name: library_app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${DATABASE_NAME:-library}
+      DATABASE_USER: ${DATABASE_USER:-library}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-library_password}
+      USE_SQLITE: "false"
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+    ports:
+      - "8000:8000"
+    networks:
+      - app_net
+    # curl в python:3.12-slim отсутствует, поэтому healthcheck на Python.
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health', timeout=5).status==200 else 1)"
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  app_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    name: library_postgres_data

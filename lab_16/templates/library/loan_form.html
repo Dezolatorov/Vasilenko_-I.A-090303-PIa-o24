@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Выдача книги — Библиотека{% endblock %}
+{% block content %}
+<h1>Выдать книгу</h1>
+<p class="subtitle">{{ book.title }} · доступно {{ book.copies_available }} из {{ book.copies_total }}</p>
+
+<form method="post" class="form">
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="flash flash__error">{{ form.non_field_errors }}</div>{% endif %}
+    {% for field in form %}
+        <label>{{ field.label }}
+            {{ field }}
+            {% if field.errors %}<span class="error">{{ field.errors|striptags }}</span>{% endif %}
+        </label>
+    {% endfor %}
+    <button type="submit" class="button">Выдать</button>
+    <a class="button button--secondary" href="{% url 'library:book_detail' book.pk %}">Отмена</a>
+</form>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Выдача книги — Библиотека{% endblock %}
+{% block content %}
+<h1>Выдать книгу</h1>
+<p class="subtitle">{{ book.title }} — доступно {{ book.copies_available }} из {{ book.copies_total }}</p>
+
+{% if book.copies_available > 0 %}
+<form method="post" class="form">
+    <label>Читатель
+        <select name="reader_id" required>
+            {% for reader in readers %}
+                <option value="{{ reader.id }}">{{ reader.full_name }} ({{ reader.email }})</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>Срок, дней
+        <input type="number" name="days" min="1" max="90" value="14">
+    </label>
+    <button type="submit" class="button">Выдать</button>
+    <a class="button button--secondary" href="{{ url_for('web.book_detail', book_id=book.id) }}">Отмена</a>
+</form>
+{% else %}
+<p class="empty">Свободных экземпляров нет.</p>
+{% endif %}
+{% endblock %}

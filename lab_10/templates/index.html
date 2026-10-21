@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Библиотека — каталог фонда</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body data-api="">
+
+<header class="header">
+    <div class="header-text">
+        <h1>Библиотека — каталог фонда</h1>
+        <p class="subtitle">Лабораторная работа №10 · REST API на Flask · данные хранятся в памяти</p>
+    </div>
+    <div class="header-status" id="status">загрузка…</div>
+</header>
+
+<section class="toolbar">
+    <input type="search" id="search" placeholder="Поиск по названию книги…" autocomplete="off">
+    <label class="check">
+        <input type="checkbox" id="only-available"> только доступные
+    </label>
+    <select id="sort">
+        <option value="title">по названию</option>
+        <option value="author">по автору</option>
+        <option value="price">по цене</option>
+        <option value="year">по году</option>
+    </select>
+    <span class="counter" id="counter"></span>
+</section>
+
+<main class="layout">
+    <section class="catalog" id="catalog"></section>
+
+    <aside class="panel" id="panel" hidden>
+        <button class="panel-close" id="panel-close" title="Закрыть">×</button>
+        <h2 id="panel-title"></h2>
+        <p class="panel-author" id="panel-author"></p>
+        <dl class="panel-facts" id="panel-facts"></dl>
+        <p class="panel-api" id="panel-api"></p>
+    </aside>
+</main>
+
+<footer class="footer">
+    <span>API: <code>http://127.0.0.1:5000</code></span>
+    <span>Слой: Flask → Service → Repository (память)</span>
+</footer>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

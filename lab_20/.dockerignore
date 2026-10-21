@@ -1,0 +1,24 @@
+# Зависимости
+.git
+.venv
+venv
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage
+htmlcov
+
+# Секреты
+.env
+
+# IDE
+.idea
+.vscode
+
+# Базы данных (runtime)
+*.db
+*.sqlite3
+library_local.db

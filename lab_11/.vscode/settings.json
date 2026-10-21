@@ -1,0 +1,7 @@
+{
+    "task.allowAutomaticTasks": "on",
+    "python.terminal.executeInFileDir": true,
+    "files.encoding": "utf8",
+    "files.eol": "\n",
+    "editor.rulers": [100]
+}

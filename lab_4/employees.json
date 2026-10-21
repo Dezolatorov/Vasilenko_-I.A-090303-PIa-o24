@@ -1,0 +1,32 @@
+[
+    {
+        "fullname": "Иванов Иван Иванович",
+        "position": "Инженер",
+        "department": "Разработка",
+        "salary": 75000.0
+    },
+    {
+        "fullname": "Зина Рита Бурмалда",
+        "position": "Инженер",
+        "department": "Разработка",
+        "salary": 20000.0
+    },
+    {
+        "fullname": "Иванов Иван",
+        "position": "Программист",
+        "department": "IT",
+        "salary": 80000.0
+    },
+    {
+        "fullname": "Петрова Анна",
+        "position": "Менеджер",
+        "department": "HR",
+        "salary": 65000.0
+    },
+    {
+        "fullname": "Сидоров Пётр",
+        "position": "Тимлид",
+        "department": "IT",
+        "salary": 120000.0
+    }
+]

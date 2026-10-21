@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ book.title }} — Библиотека{% endblock %}
+{% block content %}
+<p><a href="{% url 'library:book_list' %}">← Назад к каталогу</a></p>
+<h1>{{ book.title }}</h1>
+<p class="subtitle">{{ book.author.full_name }} · {{ book.year }} · ISBN {{ book.isbn }}</p>
+
+<dl class="details">
+    <dt>Жанры</dt><dd>{% for genre in book.genres.all %}<span class="tag">{{ genre.name }}</span>{% endfor %}</dd>
+    <dt>Цена</dt><dd>{{ book.price }} ₽</dd>
+    <dt>Экземпляры</dt><dd>{{ book.copies_available }} из {{ book.copies_total }}</dd>
+    <dt>Описание</dt><dd>{{ book.description|default:"—" }}</dd>
+</dl>
+
+{% if user.is_staff %}
+<div class="actions">
+    <a class="button" href="{% url 'library:book_edit' book.pk %}">Изменить</a>
+    <a class="button" href="{% url 'library:book_borrow' book.pk %}">Выдать книгу</a>
+    <a class="button button--danger" href="{% url 'library:book_delete' book.pk %}">Удалить</a>
+</div>
+{% endif %}
+
+<h2>Выдачи</h2>
+{% if book.loans.all %}
+<table class="table">
+    <thead><tr><th>Читатель</th><th>Выдана</th><th>Срок</th><th>Возврат</th><th></th></tr></thead>
+    <tbody>
+    {% for loan in book.loans.all %}
+        <tr>
+            <td>{{ loan.reader.full_name }}</td>
+            <td>{{ loan.loan_date }}</td>
+            <td>{{ loan.due_date }}{% if loan.is_overdue %} <span class="tag tag--danger">просрочена</span>{% endif %}</td>
+            <td>{{ loan.return_date|default:"не возвращена" }}</td>
+            <td>
+                {% if user.is_staff and not loan.return_date %}
+                    <form method="post" action="{% url 'library:loan_return' loan.pk %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="button">Вернуть</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty">Выдач нет.</p>
+{% endif %}
+{% endblock %}

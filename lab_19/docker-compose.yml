@@ -1,0 +1,224 @@
+# Docker Compose для микросервисной системы «Библиотека» (вариант 2, ЛР 19).
+#
+# Архитектура:
+#                        Gateway (8000)
+#                            |
+#          ┌─────────────────┼─────────────────┐
+#          ▼                 ▼                 ▼
+#    readers(8001)     books(8002)      loans(8003)
+#          |                 |                 |
+#          ▼                 ▼                 ▼
+#    readers-db         books-db          loans-db      RabbitMQ
+#    (PostgreSQL)      (PostgreSQL)      (PostgreSQL)   (broker)
+#
+# Паттерны: API Gateway, Database per Service (три отдельные СУБД),
+# Retry + Circuit Breaker (loans-service), асинхронное взаимодействие
+# Service → RabbitMQ → event-consumer.
+#
+# Запуск: docker compose up --build
+# Порты:  8000 (gateway), 15672 (RabbitMQ management)
+services:
+  readers-db:
+    image: postgres:16-alpine
+    container_name: library_readers_db
+    environment:
+      POSTGRES_USER: library
+      POSTGRES_PASSWORD: library
+      POSTGRES_DB: readers
+    volumes:
+      - readers-db-data:/var/lib/postgresql/data
+    networks:
+      - library_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U library -d readers"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  books-db:
+    image: postgres:16-alpine
+    container_name: library_books_db
+    environment:
+      POSTGRES_USER: library
+      POSTGRES_PASSWORD: library
+      POSTGRES_DB: books
+    volumes:
+      - books-db-data:/var/lib/postgresql/data
+    networks:
+      - library_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U library -d books"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  loans-db:
+    image: postgres:16-alpine
+    container_name: library_loans_db
+    environment:
+      POSTGRES_USER: library
+      POSTGRES_PASSWORD: library
+      POSTGRES_DB: loans
+    volumes:
+      - loans-db-data:/var/lib/postgresql/data
+    networks:
+      - library_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U library -d loans"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: library_rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: library
+      RABBITMQ_DEFAULT_PASS: library
+    ports:
+      - "15672:15672"
+    networks:
+      - library_net
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  readers:
+    build:
+      context: .
+    image: library-readers:latest
+    container_name: library_readers
+    working_dir: /app/readers-service
+    environment:
+      PORT: "8001"
+      DATABASE_URL: postgresql+psycopg://library:library@readers-db:5432/readers
+      PYTHONPATH: /app
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]
+    depends_on:
+      readers-db:
+        condition: service_healthy
+    networks:
+      - library_net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8001/health', timeout=5).status==200 else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  books:
+    build:
+      context: .
+    image: library-books:latest
+    container_name: library_books
+    working_dir: /app/books-service
+    environment:
+      PORT: "8002"
+      DATABASE_URL: postgresql+psycopg://library:library@books-db:5432/books
+      PYTHONPATH: /app
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8002"]
+    depends_on:
+      books-db:
+        condition: service_healthy
+    networks:
+      - library_net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8002/health', timeout=5).status==200 else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  loans:
+    build:
+      context: .
+    image: library-loans:latest
+    container_name: library_loans
+    working_dir: /app/loans-service
+    environment:
+      PORT: "8003"
+      DATABASE_URL: postgresql+psycopg://library:library@loans-db:5432/loans
+      BROKER_URL: amqp://library:library@rabbitmq:5672/
+      READERS_URL: http://readers:8001
+      BOOKS_URL: http://books:8002
+      CIRCUIT_FAILURES: "2"
+      CIRCUIT_TIMEOUT: "2.0"
+      PYTHONPATH: /app
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8003"]
+    depends_on:
+      loans-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      readers:
+        condition: service_healthy
+      books:
+        condition: service_healthy
+    networks:
+      - library_net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8003/health', timeout=5).status==200 else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  event-consumer:
+    build:
+      context: .
+    image: library-event-consumer:latest
+    container_name: library_event_consumer
+    working_dir: /app/loans-service
+    environment:
+      BROKER_URL: amqp://library:library@rabbitmq:5672/
+      PYTHONPATH: /app
+    command: ["python", "-m", "event_delivery.consumer"]
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      loans:
+        condition: service_started
+    networks:
+      - library_net
+
+  gateway:
+    build:
+      context: .
+    image: library-gateway:latest
+    container_name: library_gateway
+    working_dir: /app/gateway
+    environment:
+      PORT: "8000"
+      READERS_URL: http://readers:8001
+      BOOKS_URL: http://books:8002
+      LOANS_URL: http://loans:8003
+      PYTHONPATH: /app
+    command: ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+    depends_on:
+      readers:
+        condition: service_healthy
+      books:
+        condition: service_healthy
+      loans:
+        condition: service_healthy
+    networks:
+      - library_net
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health', timeout=5).status==200 else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  readers-db-data:
+  books-db-data:
+  loans-db-data:
+
+networks:
+  library_net:
+    driver: bridge

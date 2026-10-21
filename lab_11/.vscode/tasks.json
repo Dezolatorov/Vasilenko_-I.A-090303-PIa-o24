@@ -1,0 +1,52 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Запустить REST API (app.py)",
+            "type": "shell",
+            "command": "python",
+            "args": ["app.py"],
+            "options": { "cwd": "${workspaceFolder}", "env": { "PYTHONIOENCODING": "utf-8" } },
+            "isBackground": false,
+            "problemMatcher": [],
+            "presentation": { "reveal": "always", "panel": "dedicated", "focus": false },
+            "runOptions": { "runOn": "folderOpen" }
+        },
+        {
+            "label": "Запустить mini-redis",
+            "type": "shell",
+            "command": "python",
+            "args": ["mini_redis.py", "--port", "6379"],
+            "options": { "cwd": "${workspaceFolder}" },
+            "problemMatcher": [],
+            "presentation": { "reveal": "always", "panel": "dedicated" }
+        },
+        {
+            "label": "Запустить origin и CDN edge",
+            "type": "shell",
+            "command": "python",
+            "args": ["cdn/origin_server.py", "--port", "8080"],
+            "options": { "cwd": "${workspaceFolder}" },
+            "problemMatcher": [],
+            "presentation": { "reveal": "always", "panel": "dedicated" }
+        },
+        {
+            "label": "Прогнать тесты pytest",
+            "type": "shell",
+            "command": "python",
+            "args": ["-m", "pytest", "-v"],
+            "options": { "cwd": "${workspaceFolder}", "env": { "PYTHONIOENCODING": "utf-8" } },
+            "problemMatcher": [],
+            "presentation": { "reveal": "always", "panel": "dedicated" }
+        },
+        {
+            "label": "Пересоздать БД (init_db.py)",
+            "type": "shell",
+            "command": "python",
+            "args": ["init_db.py"],
+            "options": { "cwd": "${workspaceFolder}", "env": { "PYTHONIOENCODING": "utf-8" } },
+            "problemMatcher": [],
+            "presentation": { "reveal": "always", "panel": "dedicated" }
+        }
+    ]
+}

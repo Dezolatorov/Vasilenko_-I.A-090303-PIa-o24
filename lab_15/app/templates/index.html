@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Главная — Библиотека{% endblock %}
+{% block content %}
+<h1>Книжный фонд</h1>
+<div class="cards">
+    <div class="card"><span class="card__value">{{ stats.books }}</span><span class="card__label">книг</span></div>
+    <div class="card"><span class="card__value">{{ stats.copies_total }}</span><span class="card__label">экземпляров</span></div>
+    <div class="card"><span class="card__value">{{ stats.copies_available }}</span><span class="card__label">доступно</span></div>
+    <div class="card"><span class="card__value">{{ stats.readers }}</span><span class="card__label">читателей</span></div>
+    <div class="card"><span class="card__value">{{ stats.active_loans }}</span><span class="card__label">активных выдач</span></div>
+</div>
+
+<h2>Последние поступления</h2>
+<ul class="latest">
+    {% for book in latest %}
+        <li>
+            <a href="{{ url_for('web.book_detail', book_id=book.id) }}">{{ book.title }}</a>
+            — {{ book.author.full_name }}, {{ book.year }}
+        </li>
+    {% endfor %}
+</ul>
+
+<h2>Жанры</h2>
+<p class="genres">
+    {% for genre, count in stats.by_genre.items() %}
+        <span class="tag">{{ genre }}: {{ count }}</span>
+    {% endfor %}
+</p>
+{% endblock %}

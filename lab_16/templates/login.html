@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Вход — Библиотека{% endblock %}
+{% block content %}
+<h1>Вход</h1>
+<form method="post" class="form">
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="flash flash__error">{{ form.non_field_errors }}</div>{% endif %}
+    <label>Имя пользователя {{ form.username }}</label>
+    <label>Пароль {{ form.password }}</label>
+    <button type="submit" class="button">Войти</button>
+</form>
+<p class="subtitle">Демонстрационные учётные записи: admin / admin12345 (администратор), reader / reader12345 (читатель).</p>
+{% endblock %}

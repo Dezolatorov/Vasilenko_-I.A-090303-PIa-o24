@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ book.title }} — Библиотека{% endblock %}
+{% block content %}
+<p><a href="{{ url_for('web.books') }}">← Назад к каталогу</a></p>
+<h1>{{ book.title }}</h1>
+<dl class="details">
+    <dt>Автор</dt><dd>{{ book.author.full_name }} ({{ book.author.country }})</dd>
+    <dt>Жанр</dt><dd>{{ book.genre }}</dd>
+    <dt>Год</dt><dd>{{ book.year }}</dd>
+    <dt>ISBN</dt><dd>{{ book.isbn }}</dd>
+    <dt>Цена</dt><dd>{{ "%.2f"|format(book.price) }} ₽</dd>
+    <dt>Экземпляры</dt><dd>{{ book.copies_available }} из {{ book.copies_total }} доступно</dd>
+</dl>
+
+<div class="actions">
+    <a class="button" href="{{ url_for('web.book_edit', book_id=book.id) }}">Изменить</a>
+    <a class="button" href="{{ url_for('web.book_borrow', book_id=book.id) }}">Выдать читателю</a>
+    <form method="post" action="{{ url_for('web.book_delete', book_id=book.id) }}" class="inline">
+        <button type="submit" class="button button--danger">Удалить</button>
+    </form>
+</div>
+
+<h2>Выдачи этой книги</h2>
+{% if book.loans %}
+<table class="table">
+    <thead><tr><th>Читатель</th><th>Выдана</th><th>Срок</th><th>Возврат</th></tr></thead>
+    <tbody>
+    {% for loan in book.loans %}
+        <tr>
+            <td><a href="{{ url_for('web.reader_detail', reader_id=loan.reader_id) }}">{{ loan.reader.full_name }}</a></td>
+            <td>{{ loan.loan_date }}</td>
+            <td>{{ loan.due_date }}</td>
+            <td>{{ loan.return_date or "не возвращена" }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty">Выдач нет.</p>
+{% endif %}
+{% endblock %}

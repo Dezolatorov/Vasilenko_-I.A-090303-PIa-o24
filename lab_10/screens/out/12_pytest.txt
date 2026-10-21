@@ -1,0 +1,27 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-9.1.1, pluggy-1.7.0 -- C:\Users\gorak\AppData\Local\Programs\Python\Python312\python.exe
+cachedir: .pytest_cache
+rootdir: C:\elkin\lab_10
+collecting ... collected 19 items
+
+tests/test_api.py::test_get_books_returns_list PASSED                    [  5%]
+tests/test_api.py::test_get_book_by_id PASSED                            [ 10%]
+tests/test_api.py::test_get_missing_book_returns_404 PASSED              [ 15%]
+tests/test_api.py::test_create_book_returns_201 PASSED                   [ 21%]
+tests/test_api.py::test_create_book_with_invalid_data_returns_400 PASSED [ 26%]
+tests/test_api.py::test_put_replaces_book PASSED                         [ 31%]
+tests/test_api.py::test_patch_updates_price PASSED                       [ 36%]
+tests/test_api.py::test_delete_book_returns_204 PASSED                   [ 42%]
+tests/test_api.py::test_invalid_identifier_returns_400 PASSED            [ 47%]
+tests/test_api.py::test_filter_and_sort_books PASSED                     [ 52%]
+tests/test_api.py::test_search_by_author_endpoint PASSED                 [ 57%]
+tests/test_api.py::test_unknown_route_and_method PASSED                  [ 63%]
+tests/test_repository.py::test_create_assigns_incremental_ids PASSED     [ 68%]
+tests/test_repository.py::test_delete_removes_book_and_reports_missing PASSED [ 73%]
+tests/test_service.py::test_create_book_validates_and_stores PASSED      [ 78%]
+tests/test_service.py::test_create_book_rejects_invalid_data PASSED      [ 84%]
+tests/test_service.py::test_get_missing_book_raises_not_found PASSED     [ 89%]
+tests/test_service.py::test_patch_changes_only_given_fields PASSED       [ 94%]
+tests/test_service.py::test_list_books_filters_and_sorts PASSED          [100%]
+
+============================= 19 passed in 0.48s ==============================

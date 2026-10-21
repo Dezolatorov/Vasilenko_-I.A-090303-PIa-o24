@@ -1,0 +1,19 @@
+.venv
+venv
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.db
+*.sqlite3
+library_local.db
+
+# Секреты
+.env
+
+# IDE
+.idea/
+.vscode/

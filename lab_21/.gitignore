@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Тесты и покрытие
+.pytest_cache/
+htmlcov/
+.coverage
+
+# БД и данные
+*.db
+*.sqlite3
+
+# Секреты
+.env
+
+# IDE
+.idea/
+.vscode/

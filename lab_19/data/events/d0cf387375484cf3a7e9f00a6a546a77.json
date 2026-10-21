@@ -1,0 +1,12 @@
+{
+  "id": "d0cf387375484cf3a7e9f00a6a546a77",
+  "type": "LoanCreated",
+  "timestamp": "2026-10-18T13:22:19",
+  "payload": {
+    "id": "479940d2ff57402bab709dd2ecda7a8b",
+    "reader_id": "dcd8734037ed45de853f1d27d6492255",
+    "book_id": "fc23047b323e42edaf2ac0c488e61905",
+    "status": "issued",
+    "issued_at": "2026-10-18T13:22:19"
+  }
+}

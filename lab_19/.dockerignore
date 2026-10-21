@@ -1,0 +1,11 @@
+.git
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+data/
+*.log
+README.md
+report/
+lab19-report-data/

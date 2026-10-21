@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ reader.full_name }} — Библиотека{% endblock %}
+{% block content %}
+<p><a href="{{ url_for('web.readers') }}">← Все читатели</a></p>
+<h1>{{ reader.full_name }}</h1>
+<p class="subtitle">{{ reader.email }} · {{ reader.phone or "телефон не указан" }}</p>
+
+<h2>История выдач</h2>
+{% if loans %}
+<table class="table">
+    <thead><tr><th>Книга</th><th>Выдана</th><th>Срок</th><th>Возврат</th><th></th></tr></thead>
+    <tbody>
+    {% for loan in loans %}
+        <tr>
+            <td><a href="{{ url_for('web.book_detail', book_id=loan.book_id) }}">{{ loan.book.title }}</a></td>
+            <td>{{ loan.loan_date }}</td>
+            <td>{{ loan.due_date }}</td>
+            <td>{{ loan.return_date or "не возвращена" }}</td>
+            <td>
+                {% if not loan.return_date %}
+                    <form method="post" action="{{ url_for('web.loan_return', loan_id=loan.id) }}">
+                        <button type="submit" class="button">Вернуть</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty">Выдач нет.</p>
+{% endif %}
+{% endblock %}

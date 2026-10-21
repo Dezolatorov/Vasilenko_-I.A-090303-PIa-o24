@@ -1,0 +1,15 @@
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5000
+Press CTRL+C to quit
+127.0.0.1 - - [19/Oct/2026 00:44:49] "GET /books HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 00:45:46] "GET /books HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 00:47:09] "GET /books HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 00:47:09] "GET /books/1 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 00:47:09] "POST /books HTTP/1.1" 201 -
+127.0.0.1 - - [19/Oct/2026 00:47:10] "PUT /books/6 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 00:47:10] "PATCH /books/6 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 00:47:10] "DELETE /books/6 HTTP/1.1" 204 -
+127.0.0.1 - - [19/Oct/2026 00:47:10] "GET /books?genre=роман&min_price=700&max_price=1300 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 00:47:10] "GET /books?sort=price&order=desc HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 00:47:10] "GET /books/search?author=булгаков HTTP/1.1" 200 -
+127.0.0.1 - - [19/Oct/2026 00:47:10] "GET /books/999 HTTP/1.1" 404 -

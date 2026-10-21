@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Библиотека{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" href="{% url 'library:index' %}">Библиотека</a>
+    <nav>
+        <a href="{% url 'library:book_list' %}">Каталог</a>
+        <a href="{% url 'library:readers' %}">Читатели</a>
+        <a href="{% url 'library:statistics' %}">Статистика</a>
+        {% if user.is_staff %}<a href="{% url 'library:book_create' %}">Добавить книгу</a>{% endif %}
+        {% if user.is_staff %}<a href="/admin/">Админка</a>{% endif %}
+    </nav>
+    <div class="user">
+        {% if user.is_authenticated %}
+            {{ user.username }}
+            <form method="post" action="{% url 'logout' %}" class="inline">
+                {% csrf_token %}
+                <button type="submit" class="link">Выйти</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}">Войти</a>
+        {% endif %}
+    </div>
+</header>
+<main>
+    {% if messages %}
+        <div class="flash">
+            {% for message in messages %}<p class="flash__{{ message.tags }}">{{ message }}</p>{% endfor %}
+        </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+</main>
+<footer class="footer">Лабораторная работа №16 · Django</footer>
+</body>
+</html>

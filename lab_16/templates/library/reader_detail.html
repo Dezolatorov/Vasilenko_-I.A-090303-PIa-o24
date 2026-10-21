@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}{{ reader.full_name }} — Библиотека{% endblock %}
+{% block content %}
+<p><a href="{% url 'library:readers' %}">← Все читатели</a></p>
+<h1>{{ reader.full_name }}</h1>
+<p class="subtitle">{{ reader.email }} · {{ reader.phone|default:"телефон не указан" }}</p>
+
+<h2>История выдач</h2>
+{% if loans %}
+<table class="table">
+    <thead><tr><th>Книга</th><th>Выдана</th><th>Срок</th><th>Возврат</th><th></th></tr></thead>
+    <tbody>
+    {% for loan in loans %}
+        <tr>
+            <td><a href="{% url 'library:book_detail' loan.book.pk %}">{{ loan.book.title }}</a></td>
+            <td>{{ loan.loan_date }}</td>
+            <td>{{ loan.due_date }}{% if loan.is_overdue %} <span class="tag tag--danger">просрочена</span>{% endif %}</td>
+            <td>{{ loan.return_date|default:"не возвращена" }}</td>
+            <td>
+                {% if user.is_staff and not loan.return_date %}
+                    <form method="post" action="{% url 'library:loan_return' loan.pk %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="button">Вернуть</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty">Выдач нет.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Статистика — Библиотека{% endblock %}
+{% block content %}
+<h1>Статистика</h1>
+<div class="cards">
+    <div class="card"><span class="card__value">{{ total_books }}</span><span class="card__label">всего книг</span></div>
+    <div class="card"><span class="card__value">{{ available_books }}</span><span class="card__label">в наличии</span></div>
+    <div class="card"><span class="card__value">{{ avg_price|floatformat:2 }}</span><span class="card__label">средняя цена, ₽</span></div>
+    <div class="card"><span class="card__value">{{ overdue_loans }}</span><span class="card__label">просрочено выдач</span></div>
+    <div class="card"><span class="card__value">{{ readers_count }}</span><span class="card__label">читателей</span></div>
+</div>
+
+<h2>Книги по жанрам</h2>
+<table class="table">
+    <thead><tr><th>Жанр</th><th>Книг</th></tr></thead>
+    <tbody>
+    {% for genre in by_genre %}
+        <tr><td>{{ genre.name }}</td><td>{{ genre.books_count }}</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% if top_reader %}<p>Самый активный читатель: {{ top_reader.full_name }} ({{ top_reader.loans_count }} выдач).</p>{% endif %}
+{% if expensive %}<p>Самая дорогая книга: {{ expensive.title }} — {{ expensive.price }} ₽.</p>{% endif %}
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Главная — Библиотека{% endblock %}
+{% block content %}
+<h1>Библиотека</h1>
+<p class="subtitle">Каталог книг, авторы, читатели и выдача книг.</p>
+
+<div class="cards">
+    <div class="card"><span class="card__value">{{ books_count }}</span><span class="card__label">книг</span></div>
+    <div class="card"><span class="card__value">{{ authors_count }}</span><span class="card__label">авторов</span></div>
+    <div class="card"><span class="card__value">{{ readers_count }}</span><span class="card__label">читателей</span></div>
+    <div class="card"><span class="card__value">{{ active_loans }}</span><span class="card__label">активных выдач</span></div>
+</div>
+
+<h2>Последние поступления</h2>
+<ul class="latest">
+    {% for book in latest %}
+        <li><a href="{% url 'library:book_detail' book.pk %}">{{ book.title }}</a> — {{ book.author.full_name }}, {{ book.year }}</li>
+    {% endfor %}
+</ul>
+
+<h2>Разделы</h2>
+<ul class="latest">
+    <li><a href="{% url 'library:book_list' %}">Каталог книг</a></li>
+    <li><a href="{% url 'library:readers' %}">Читатели</a></li>
+    <li><a href="{% url 'library:statistics' %}">Статистика</a></li>
+</ul>
+{% endblock %}

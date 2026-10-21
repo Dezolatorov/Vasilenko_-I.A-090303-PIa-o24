@@ -1,0 +1,14 @@
+fastapi==0.143.5
+uvicorn[standard]==0.54.0
+sqlalchemy==2.1.5
+psycopg[binary]==3.3.6
+pydantic==2.14.1
+pydantic-settings==2.16.0
+python-dotenv==1.2.4
+gunicorn==26.2.0
+
+# Dev / test / CI
+pytest==7.4.3
+pytest-cov==7.1.0
+httpx==0.28.1
+ruff==0.17.1

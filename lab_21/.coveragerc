@@ -1,0 +1,9 @@
+[run]
+omit =
+    src/library/run.py
+    src/library/seed.py
+    src/library/demo.py
+    src/library/utils/logging.py
+
+[report]
+fail_under = 70

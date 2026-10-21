@@ -1,0 +1,1 @@
+﻿# readers-service пакет

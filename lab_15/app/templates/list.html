@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Каталог — Библиотека{% endblock %}
+{% block content %}
+<h1>Каталог книг</h1>
+
+<form class="filters" method="get" action="{{ url_for('web.books') }}">
+    <input type="search" name="search" value="{{ search }}" placeholder="Поиск по названию, ISBN или жанру">
+    <select name="genre">
+        <option value="">Все жанры</option>
+        {% for item in genres %}
+            <option value="{{ item }}" {% if item == genre %}selected{% endif %}>{{ item }}</option>
+        {% endfor %}
+    </select>
+    <label><input type="checkbox" name="available" value="1" {% if available %}checked{% endif %}> только в наличии</label>
+    <select name="sort">
+        <option value="title" {% if sort == 'title' %}selected{% endif %}>по названию</option>
+        <option value="year" {% if sort == 'year' %}selected{% endif %}>по году</option>
+        <option value="price" {% if sort == 'price' %}selected{% endif %}>по цене</option>
+    </select>
+    <select name="order">
+        <option value="asc" {% if order == 'asc' %}selected{% endif %}>по возрастанию</option>
+        <option value="desc" {% if order == 'desc' %}selected{% endif %}>по убыванию</option>
+    </select>
+    <button type="submit">Применить</button>
+</form>
+
+{% if books %}
+<table class="table">
+    <thead>
+    <tr><th>Название</th><th>Автор</th><th>Жанр</th><th>Год</th><th>Экземпляры</th><th></th></tr>
+    </thead>
+    <tbody>
+    {% for book in books %}
+        <tr>
+            <td><a href="{{ url_for('web.book_detail', book_id=book.id) }}">{{ book.title }}</a></td>
+            <td>{{ book.author.full_name }}</td>
+            <td>{{ book.genre }}</td>
+            <td>{{ book.year }}</td>
+            <td>{{ book.copies_available }} / {{ book.copies_total }}</td>
+            <td>
+                <a class="button" href="{{ url_for('web.book_edit', book_id=book.id) }}">Изменить</a>
+                <form method="post" action="{{ url_for('web.book_delete', book_id=book.id) }}" class="inline">
+                    <button type="submit" class="button button--danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="empty">Книг по заданным условиям не найдено.</p>
+{% endif %}
+{% endblock %}

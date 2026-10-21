@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Читатели — Библиотека{% endblock %}
+{% block content %}
+<h1>Читатели</h1>
+<table class="table">
+    <thead><tr><th>ФИО</th><th>E-mail</th><th>Телефон</th><th>Выдач</th></tr></thead>
+    <tbody>
+    {% for reader in readers %}
+        <tr>
+            <td><a href="{{ url_for('web.reader_detail', reader_id=reader.id) }}">{{ reader.full_name }}</a></td>
+            <td>{{ reader.email }}</td>
+            <td>{{ reader.phone or "—" }}</td>
+            <td>{{ reader.loans|length }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,12 @@
+{
+  "id": "a5b42a51a7e34995bf5d3e7c504a217c",
+  "type": "LoanReturned",
+  "timestamp": "2026-10-18T13:22:20",
+  "payload": {
+    "id": "479940d2ff57402bab709dd2ecda7a8b",
+    "reader_id": "dcd8734037ed45de853f1d27d6492255",
+    "book_id": "fc23047b323e42edaf2ac0c488e61905",
+    "status": "returned",
+    "issued_at": "2026-10-18T13:22:19"
+  }
+}
